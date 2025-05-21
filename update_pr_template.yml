@@ -15,6 +15,7 @@ jobs:
         id: commits
         run: |
           echo "COMMITS<<EOF" >> $GITHUB_ENV
+          git fetch origin ${{ github.event.pull_request.base.ref }}
           git log origin/${{ github.event.pull_request.base.ref }}..HEAD --pretty=format:"- %s" >> $GITHUB_ENV
           echo "EOF" >> $GITHUB_ENV
 
