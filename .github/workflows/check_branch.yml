@@ -1,0 +1,17 @@
+name: Enforce Branch Naming
+
+on:
+  push:
+    branches-ignore: [main, master]  # 排除默认分支
+
+jobs:
+  validate-branch:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check branch name
+        run: |
+          branch_name="${{ github.ref_name }}"
+          if [[ ! "$branch_name" =~ ^(feature|release|hotfix|customer)/.+ ]]; then
+            echo "错误：分支名必须为以下格式之一：feature/xxx, release/xxx, hotfix/xxx, customer/xxx"
+            exit 1
+          fi
