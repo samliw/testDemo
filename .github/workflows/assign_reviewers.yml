@@ -1,0 +1,32 @@
+name: Assign PR Reviewers
+
+on:
+  pull_request:
+    types: [opened, ready_for_review]
+
+jobs:
+  assign-reviewers:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check branch type
+        id: branch-check
+        run: |
+          if [[ "${{ github.head_ref }}" == feature/* ]]; then
+            echo "team=frontend-team" >> $GITHUB_OUTPUT
+          elif [[ "${{ github.head_ref }}" == release/* ]]; then
+            echo "team=devops-team" >> $GITHUB_OUTPUT
+          elif [[ "${{ github.head_ref }}" == hotfix/* ]]; then
+            echo "team=senior-devs" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Assign reviewers
+        if: steps.branch-check.outputs.team != ''
+        uses: actions/github-script@v6
+        with:
+          script: |
+            github.rest.pulls.requestReviewers({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              pull_number: context.payload.pull_request.number,
+              team_reviewers: [${{ steps.branch-check.outputs.team }}]
+            })
