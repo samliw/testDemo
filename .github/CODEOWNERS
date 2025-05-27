@@ -1,0 +1,8 @@
+# 全局默认审查者
+*       @default-team
+
+# 按分支类型分配
+/feature/    @frontend-team  # 所有 feature 分支的 PR 由前端团队审查
+/release/    @devops-team    # 发布分支由 DevOps 团队审查
+/hotfix/     @senior-devs    # 紧急修复由高级工程师审查
+/customer/   @account-manager @tech-lead  # 客户分支由特定角色审查
